@@ -1,0 +1,17 @@
+{
+  "name": "op.gg-tf2-version",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon src/server.js"
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "express": "^4.17.1",
+    "steamid": "^1.1.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}
