@@ -88,7 +88,7 @@ app.get('/player/:sid64', async (req,res) => {
 
         console.log(logs)
 
-        res.json({ playerName, total, media, contador, logsVerificadas })
+        res.json({ playerName, total, media, contador, logsVerificadas, totalLogsPesquisadas:logs })
     }catch(err){
         res.send(err)
     }
