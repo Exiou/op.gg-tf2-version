@@ -9,46 +9,48 @@ app.use(express.json())
 app.get('/player/:sid64', async (req,res) => {
     try{
         const { sid64 } = req.params
-        let { classe = '', logs = 0, gamemode = '' } = req.query
+        var { classe = '', logs = 0, gamemode = '' } = req.query
 
-        var kills = 0, deaths = 0, assists = 0, dmg = 0, dapm = 0, ubers = 0, drops = 0
+        var kills = 0
+            , deaths = 0
+            , assists = 0
+            , dmg = 0
+            , dapm = 0
+            , ubers = 0
+            , drops = 0
+            , pctgDanoTime = 0
             
-        const a = await axios.get(`http://logs.tf/api/v1/log?player=${sid64}`)
-            
-            
-
-
-
         var contador = 0
-        var playerName = ''
-        var logsVerificadas = []
+            , playerName = ''
+            , logsVerificadas = []
+
+        const logIndex = await axios.get(`http://logs.tf/api/v1/log?player=${sid64}`)
+
 
         for(let i = 0; i < logs;i++){
         
-            const b = await axios.get(`http://logs.tf/api/v1/log/${a.data.logs[i].id}`)
+            const log = await axios.get(`http://logs.tf/api/v1/log/${logIndex.data.logs[i].id}`)
+            
+            var sid3 = new SteamID(sid64).getSteam3RenderedID()
 
-            
-            var sid3 = new SteamID(sid64)
-            
-            sid3 = sid3.getSteam3RenderedID()
-            
-            if(playerName == '') playerName = b.data.names[`${sid3}`]
-            
-            const player = b.data.players[`${sid3}`]
-            const numJogadores = Object.keys(b.data.names).length
+            const player = log.data.players[`${sid3}`]
+            const name = log.data.names
+            const team = log.data.teams[`${player.team}`]
 
-            if(gamemode = '6s'){
+            if(playerName == '') playerName = name[`${sid3}`]
+            
+            const numJogadores = Object.keys(name).length
+
+            if(gamemode == '6s'){
                 if(classe == "medic" && player.class_stats[0].type == classe && (numJogadores > 11 && numJogadores < 18)){
 
                     kills += player.kills
                     deaths += player.deaths
                     assists += player.assists
-                    dmg += player.dmg
-                    dapm += player.dapm
                     ubers += player.ubers
                     drops += player.drops
                     contador++
-                    logsVerificadas.push(`http://logs.tf/${a.data.logs[i].id}`)
+                    logsVerificadas.push(`http://logs.tf/${logIndex.data.logs[i].id}`)
 
                 }else if(player.class_stats[0].type == classe && (numJogadores > 11 && numJogadores < 18)){
                     kills += player.kills
@@ -56,8 +58,9 @@ app.get('/player/:sid64', async (req,res) => {
                     assists += player.assists
                     dmg += player.dmg
                     dapm += player.dapm
+                    pctgDanoTime += player.dmg*100/team.dmg
                     contador++
-                    logsVerificadas.push(`http://logs.tf/${a.data.logs[i].id}`)
+                    logsVerificadas.push(`http://logs.tf/${logIndex.data.logs[i].id}`)
                 }else{
                     logs++
                 }
@@ -83,12 +86,20 @@ app.get('/player/:sid64', async (req,res) => {
             dmg: dmg/contador,
             dapm: dapm/contador,
             ubers: ubers/contador,
-            drops: drops/contador
+            drops: drops/contador,
+            pctgDanoTime: Math.round((pctgDanoTime/contador + Number.EPSILON) * 100) / 100
         }
 
-        console.log(logs)
+        const data = { 
+            playerName,
+            total,
+            media, 
+            contador, 
+            logsVerificadas, 
+            totalLogsPesquisadas:logs 
+        }
 
-        res.json({ playerName, total, media, contador, logsVerificadas, totalLogsPesquisadas:logs })
+        res.json(data)
     }catch(err){
         res.send(err)
     }
