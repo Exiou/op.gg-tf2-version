@@ -30,6 +30,8 @@ export const PlayerController = (app: express.Express) => {
       const logsToSerach = logIndex.logs.slice(0, logs)
       for (const log of logsToSerach) {
         const logObject = await LogsTfApi.fetchLog(log.id)
+        logObject.players.
+
         const player = logObject.players[`${sid3}`];
         const team = (logObject.teams as any)[`${player.team}`] as TeamData;
         const numberOfPlayers = Object.keys(logObject.names).length;
