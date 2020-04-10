@@ -4,6 +4,6 @@ import PlayerController from './controllers/PlayerController'
 
 const routes = Router()
 
-routes.get('/player/:sid64', PlayerController.index)
+routes.get('/player/:sid64', PlayerController.updateStats)
 
 export default routes
