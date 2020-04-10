@@ -1,60 +1,6 @@
-import { Schema, model, Document } from 'mongoose'
+import { Schema, model } from 'mongoose'
 
-interface PlayerInterface extends Document {
-  name: string,
-  sid64: string,
-  sid3: string,
-  lastLog: number,
-  scoutLogCount: number,
-  soldierLogCount: number,
-  demomanLogCount: number,
-  medicLogCount: number,
-  stats: {
-    scoutStats: {
-      kills: number,
-      assists: number,
-      deaths: number,
-      dmg: number,
-      dpm: number,
-      teamDmgRatio: number,
-      accuracy: number,
-      kad: number,
-      healReceived: number
-    },
-    soldierStats: {
-      kills: number,
-      assists: number,
-      deaths: number,
-      dmg: number,
-      dpm: number,
-      teamDmgRatio: number,
-      kad: number,
-      healReceived: number
-    },
-    demomanStats: {
-      kills: number,
-      assists: number,
-      deaths: number,
-      dmg: number,
-      dpm: number,
-      teamDmgRatio: number,
-      kad: number,
-      healReceived: number
-    },
-    medicStats: {
-      kills: number,
-      assists: number,
-      deaths: number,
-      kad: number,
-      dmgTaken: number,
-      ubers: number,
-      drops: number,
-      heal: number,
-      avgTimeToBuild: number,
-      avgUberLength: number
-    }
-  }
-}
+import { PlayerInterface } from './interfaces/PlayerInterface'
 
 const PlayerSchema = new Schema({
   name: String,
